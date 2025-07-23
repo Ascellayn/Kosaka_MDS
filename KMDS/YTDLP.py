@@ -1,4 +1,4 @@
-from YTDLPS.Globals import *;
+from KMDS.Globals import *;
 import os, threading;
 
 def Fetch_Information(Request: dict) -> dict:

@@ -1,5 +1,5 @@
-from YTDLPS.Globals import *;
-from YTDLPS.YTDLP import *;
+from KMDS.Globals import *;
+from KMDS.YTDLP import *;
 
 API = flask.Flask(__name__);
 
