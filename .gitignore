@@ -2,6 +2,7 @@
 
 logs/*
 DEBUG-API/*
+Cache/*
 
 __pycache__/*
 *.pyc

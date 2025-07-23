@@ -1,6 +1,6 @@
 from TSN_Abstracter import *;
-from flask import Flask, request, abort;
-import yt_dlp, json;
+import flask, json, yt_dlp;
 
-YTDLPS_Version: str = "v1.0a";
 Root_CFG = File.JSON_Read("Root_CFG.json");
+Debug_Mode: bool = Root_CFG["Debug"];
+YTDLPS_Version: str = Root_CFG["Version"];
