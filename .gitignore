@@ -1,8 +1,9 @@
 *.env
 
 logs/*
-DEBUG-API/*
 Cache/*
+DEBUG-API/*
+Downloads/*
 
 __pycache__/*
 *.pyc

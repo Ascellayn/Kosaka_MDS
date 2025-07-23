@@ -1,7 +1,7 @@
 
 {
 	"Debug": true,
-	"Version": "v1.0b",
+	"Version": "v1.0b2",
 	"WebServer": {
 		"Host": "127.0.0.1",
 		"Port": 60071
