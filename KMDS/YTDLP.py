@@ -14,6 +14,9 @@ def Fetch_Information(Request: dict) -> dict:
 		# DEBUG
 		if (Debug_Mode): File.JSON_Write(F"DEBUG-API/{URL_ID}.json", Raw_Information);
 
+		with yt_dlp.YoutubeDL(Options) as YDL:
+			YDL.download([Request["URL"]]);
+
 		# Flask Return Data & Caching Logic
 		Information: dict = {
 			"Status": 200,
