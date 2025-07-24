@@ -1,73 +1,103 @@
 from KMDS.Globals import *;
-import os, threading;
+import os;
 
-def Fetch_Information(Request: dict) -> dict:
-	Options: dict = {
+def isOpus(Information: dict) -> bool:
+	if ("entries" in Information.keys()):
+		if (Information["entries"][0]["ext"] == "opus"): return True;
+	elif (Information["ext"] == "opus"): return True;
+
+	return False;
+
+def Default_Options() -> dict:
+	return {
 		"format": "bestaudio/best",
 		"outtmpl": os.path.join("Cache", '%(title)s.%(ext)s'),
 		'writethumbnail': False
 	};
-	with yt_dlp.YoutubeDL(Options) as YDL:
+
+def Download_Hook(Information: dict) -> None:
+	if (Information['filename'][-4:] == "opus"):
+		File_Name = f"{Information['filename'][:-4]}ogg";
+	else: File_Name = Information["filename"];
+
+	Local_Files[File_Name] = Information["status"];
+
+def Download_Thread(URL: str, Opus: bool) -> None:
+	AL: Log.Awaited_Log = Log.Debug(f"Downloading {URL}...");
+	Options: dict = Default_Options();
+	if (Opus):
+		Log.Debug(f"Opus conversion required for {URL}!"); 
+		Options["postprocessors"] = [
+			{
+				"key": "FFmpegExtractAudio",
+				"preferredcodec": "vorbis",
+				"preferredquality": "quality"
+			}
+		];
+	Options["progress_hooks"] = [Download_Hook];
+
+	with yt_dlp.YoutubeDL(Options) as YDL: YDL.download([URL]);
+	AL.OK();
+
+def Fetch_Information(Request: dict) -> dict:
+	with yt_dlp.YoutubeDL(Default_Options()) as YDL:
 		Raw_Information = YDL.sanitize_info((YDL.extract_info(Request["URL"], download=False)));
-		URL_ID: str = Raw_Information["id"];
+		Misc.Thread_Start(Download_Thread, (Request["URL"], isOpus(Raw_Information)), True)
+	URL_ID: str = Raw_Information["id"];
 
-		# DEBUG
-		if (Debug_Mode): File.JSON_Write(F"DEBUG-API/{URL_ID}.json", Raw_Information);
+	if (Debug_Mode): File.JSON_Write(F"DEBUG-API/{URL_ID}.json", Raw_Information);
 
-		with yt_dlp.YoutubeDL(Options) as YDL:
-			YDL.download([Request["URL"]]);
+	# Flask Return Data & Caching Logic
+	Information: dict = {
+		"Status": 200,
+		"ID": Raw_Information["id"],
+		"Songs": []
+	};
 
-		# Flask Return Data & Caching Logic
-		Information: dict = {
-			"Status": 200,
-			"ID": Raw_Information["id"],
-			"Songs": []
-		};
-
-		if ("entries" not in Raw_Information.keys()):
-			File_Title = Raw_Information['fulltitle']; 
+	if ("entries" not in Raw_Information.keys()):
+		File_Title = Raw_Information['fulltitle'];
+		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
+		Information["Songs"].append({
+			"File_Name": File_Name,
+			#"Music_URL": Raw_Information['url'],
+			"Music_URL": f"http://{Root_CFG["WebServer"]["Host"]}:{Root_CFG["WebServer"]["Port"]}/tunnel?file={File_Name}",
+			"Cover_URL": Raw_Information["thumbnail"],
+			"Cover_Name": f"{File_Title}.{Raw_Information["thumbnail"][-3:]}",
+			"Metadata": {
+				"Title": File_Title,
+				"Artist": Raw_Information["uploader"],
+				"Album": Raw_Information.get("album", None),
+				"Track_Number": Raw_Information.get("track_number", 0),
+				"Duration": Raw_Information["duration"],
+				"Approximate_Size": Raw_Information["filesize_approx"]
+			}
+		});
+		Local_Files[File_Name] = "downloading";
+		#Information["Proxied_Headers"] = Raw_Information["http_headers"];
+	else:
+		for Entry in Raw_Information["entries"]:
+			File_Title = Entry['fulltitle'];
+			File_Name = f"{File_Title}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 			Information["Songs"].append({
-				"File_Name": f"{File_Title}.{Raw_Information["ext"]}",
-				"Music_URL": Raw_Information['url'],
-				"Cover_URL": Raw_Information["thumbnail"],
-				"Cover_Name": f"{File_Title}.{Raw_Information["thumbnail"][-3:]}",
+				"File_Name": File_Name,
+				#"Music_URL": Entry['url'],
+				"Music_URL": f"http://{Root_CFG["WebServer"]["Host"]}:{Root_CFG["WebServer"]["Port"]}/tunnel?file={File_Name}",
+				"Cover_URL": Entry["thumbnail"],
+				"Cover_Name": f"{File_Title}.{Entry["thumbnail"][-3:]}",
 				"Metadata": {
 					"Title": File_Title,
-					"Artist": Raw_Information["uploader"],
-					"Album": Raw_Information.get("album", None),
-					"Track_Number": Raw_Information.get("track_number", 0),
-					"Duration": Raw_Information["duration"],
-					"Approximate_Size": Raw_Information["filesize_approx"]
+					"Artist": Entry["uploader"],
+					"Album": Entry.get("album", None),
+					"Track_Number": Entry.get("track_number", 0),
+					"Duration": Entry["duration"],
+					"Approximate_Size": Entry["filesize_approx"]
 				}
 			});
-			Information["Proxied_Headers"] = Raw_Information["http_headers"];
-		else:
-			for Entry in Raw_Information["entries"]:
-				File_Title = Entry['fulltitle'];
-				Information["Songs"].append({
-					"File_Name": f"{File_Title}.{Entry["ext"]}",
-					"Music_URL": Entry['url'],
-					"Cover_URL": Entry["thumbnail"],
-					"Cover_Name": f"{File_Title}.{Entry["thumbnail"][-3:]}",
-					"Metadata": {
-						"Title": File_Title,
-						"Artist": Entry["uploader"],
-						"Album": Entry.get("album", None),
-						"Track_Number": Entry.get("track_number", 0),
-						"Duration": Entry["duration"],
-						"Approximate_Size": Entry["filesize_approx"]
-					}
-				});
-			Information["Proxied_Headers"] = Raw_Information["entries"][0]["http_headers"];
-
-		"""
-		File.JSON_Write(F"Cache/{URL_ID}.json", {
-			"Download_Date": Time.Get_Unix(),
-			"Metadata": Information["Songs"]
-		});
-		"""
-
-		return Information;
+			Local_Files[File_Name] = "downloading";
+		#Information["Proxied_Headers"] = Raw_Information["entries"][0]["http_headers"];
+	
+	# We set Local_Files[File_Name] here just in case to avoid race conditions with the client, though technically setting these also create a race condition.. This time with the download thread, however the odds of it being faster than the information return are probably zero.
+	return Information;
 
 
 """class Proxied_Download:
