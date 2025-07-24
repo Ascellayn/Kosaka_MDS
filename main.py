@@ -1,4 +1,4 @@
-# Kosaka Media Downloading Server (c) Ascellayn (2025) - TSN License 1.1 - Base
+# Kosaka Media Downloading Server (c) Ascellayn (2025) - TSN License 1.0 - Base
 from KMDS.Globals import *;
 from KMDS.API import API;
 

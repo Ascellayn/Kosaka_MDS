@@ -12,6 +12,7 @@ def Request_Handler(URL: str) -> None:
 	try:
 		Request_JSON: dict = Request.json(); Log.Info(str(Request_JSON));
 		if (Request_JSON["Status"] != 200): Log.Error(Request_JSON["Error"]); return;
+		File.JSON_Write(f"Downloads/REQUEST_HANDLER.JSON", Request_JSON);
 
 		for Index in range(len(Request_JSON["Songs"])):
 			#Deprecated
@@ -47,7 +48,10 @@ def Request_Handler(URL: str) -> None:
 		AL.ERROR(Except);
 		raise Except;
 
-#Request_Handler("https://lexycat.bandcamp.com/album/heartstrings"); # Bandcamp
-Request_Handler("https://on.soundcloud.com/piimuKbl3a7KDMDGxP"); # Soundcloud
-#Request_Handler("https://www.youtube.com/watch?v=gvPaMPeGwqg"); # YT
-#Request_Handler("https://www.fuckshit.com/watch?v=gvPaMPeGwqg"); # Invalid
+Request_Handler("https://soundcloud.com/klausveen/klaus-veen-ordinary-days-v2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"); # Soundcloud - 1 Song
+# ↑ This is used for the README's Example /fetch JSON.
+
+Request_Handler("https://lexycat.bandcamp.com/album/heartstrings"); # Bandcamp (Album)
+Request_Handler("https://on.soundcloud.com/piimuKbl3a7KDMDGxP"); # Soundcloud (Album)
+Request_Handler("https://www.youtube.com/watch?v=gvPaMPeGwqg"); # YT
+Request_Handler("https://www.fuckshit.com/watch?v=gvPaMPeGwqg"); # Invalid
