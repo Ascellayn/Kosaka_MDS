@@ -3,7 +3,7 @@ from KMDS.Globals import *;
 from KMDS.API import API;
 
 if (__name__ == '__main__'):
-	Log.Clear(); TSN_Abstracter.Require_Version((2,0,0));
+	Log.Clear(); TSN_Abstracter.Require_Version((2,1,0));
 	Config.Logging["Print_Level"] = 15 if (Debug_Mode) else 20;
 	Config.Logging["File"] = True;
 	
