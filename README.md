@@ -5,11 +5,14 @@ TSN's Infrastructure is definitely quite a mess, have the following in mind:
 - The Media Server MUST be hosted on "E2B" (because A1F also hosts a VPN, and obviously I do not wish my VPN IP's to get sent to the void fields by Google)
 - E2B is an EXTREMELY weak server with negative amounts of RAM
 - Both A1F and E2B save their files to the same shared drive
+- A1F and E2B, despite having different public ips, are in fact very much in the same private network.
 
 So now you somewhat maybe understand why I don't just use YT-DLP directly in Kosaka's code and why I'm doing extremely weird things to have the result that I want.  
 As I'm writing (v1.0rc1), I'm still not doing *exactly* what I want however:  
 I'd rather download the files via KMDS once and then have Kosaka directly pull from KMDS's Cache the files it needs, because the shared drive nature of TSN's Infrastructure let's me do ungodly cursed things such as this. It'd improve performance significantly more because I wouldn't have to basically "download" the same file twice.  
 I would do this but I've delayed Kosaka's v2.4.0 release a ***little bit too much already***...
+
+<br>
 
 ## Usage
 - Initiate a GET Request at http://[KMDS]/ to get KMDS's Root_CFG JSON File.
@@ -58,6 +61,16 @@ I would do this but I've delayed Kosaka's v2.4.0 release a ***little bit too muc
 	- 400: Ya jinxed the request somehow (missing "file" argument)
 
 
+## Dependencies
+- [TSN_Abstracter v2.1.0 (or above)](https://github.com/Ascellayn/TSN_Abstracter)
+- python3-flask
+- python3-httpx
+- python3-re
+- yt-dlp
+After you've figured (most likely) how in the name of fuck to install TSNA, all you have to do is run `main.py`, you may also run `Showcase.py` to do some test downloads.  
+KMDS is not intended to be open to the internet, stay local folks.  
+
+<br>
 
 ## W T F is this codebase?
 This honestly was pulled out of my arse in about 8~ hours of work (which honestly isn't a lot to my standard), I had to go through a lot of trial and error, and objectively this is a very dodgy way of doing what I want. But hey if it ain't broke, don't fix it.  
@@ -65,12 +78,9 @@ I've had to fight at least 201 race conditions during the development of this to
 
 By the way there's basically no error handling lol, GOOD LUCK!
 
+### may i fix it
+what the hell is wrong with you digging in code as bad as this
 
+<br>
 
-## Dependencies
-- [TSN_Abstracter v2.1.0 (or above)](https://github.com/Ascellayn/TSN_Abstracter)
-- python3-flask
-- python3-httpx
-- python3-re
-- yt-dlp
-After you've figured (most likely) how in the name of fuck to install TSNA, all you have to do is run `main.py`, you may also run `Showcase.py` to do some test downloads.
+###### Kosaka Media Downloading Service (KMDS) © 2025 by Ascellayn is licensed under TSN License 1.0 - Base

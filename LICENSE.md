@@ -1,4 +1,4 @@
-# Kosaka Media Downloading Server (KMDS) © 2025 by Ascellayn is licensed under TSN License 1.0 - Base
+# Kosaka Media Downloading Service (KMDS) © 2025 by Ascellayn is licensed under TSN License 1.0 - Base
 The Sirio Network License 1.0 - Base  
 *Origin: https://dev.sirio-network.com/license/1.0*  
 
