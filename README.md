@@ -12,6 +12,11 @@ As I'm writing (v1.0rc1), I'm still not doing *exactly* what I want however:
 I'd rather download the files via KMDS once and then have Kosaka directly pull from KMDS's Cache the files it needs, because the shared drive nature of TSN's Infrastructure let's me do ungodly cursed things such as this. It'd improve performance significantly more because I wouldn't have to basically "download" the same file twice.  
 I would do this but I've delayed Kosaka's v2.4.0 release a ***little bit too much already***...
 
+## just use cobalt tools / [insert name here] bruh
+That's what I did actually in the past. Till I got the dreaded 0-bytes YouTube bug that everyone had at the time & numerous other bugs related to YouTube. It was also dog slow due to E2B having a massive skill issue converting everything, resulting in download speeds averaging 0.6MB/s... Yikes!  
+It was better anyways in the end to build this custom solution (so that empty file bug was the greatest excuse I've ever had really), you don't wanna see the horrors of Kosaka's code Pre-KMDS, there was a ***LOT*** of hacks to get even just the fucking title of the god damn song. It was bad. Really bad.
+
+
 <br>
 
 ## Usage
@@ -82,6 +87,14 @@ By the way there's basically no error handling lol, GOOD LUCK!
 
 ### may i fix it
 what the hell is wrong with you digging in code as bad as this
+
+<br>
+
+## The chaos I faced (this was definitely a learning experience)
+I tried multiple things to make this work:
+### Downloading directly the URL provided and just sending it (so everything is done with a single /fetch)
+This actually worked very well. Until I remembered Albums existed. This results in the client basically timing out every time (even now it's pretty bad despite the better way that I handle things now).  
+It was a great proof of concept that 
 
 <br>
 
