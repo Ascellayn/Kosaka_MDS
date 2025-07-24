@@ -7,5 +7,5 @@ if (__name__ == '__main__'):
 	Config.Logging["Print_Level"] = 15 if (Debug_Mode) else 20;
 	Config.Logging["File"] = True;
 	
-	Log.Info(f"Kosaka YT-DLP Server {KMDS_Version}");
+	Log.Info(f"Kosaka Media Downloading Server (KMDS) {KMDS_Version}");
 	API.run(Root_CFG["WebServer"]["Host"], Root_CFG["WebServer"]["Port"], Debug_Mode, use_reloader=False);

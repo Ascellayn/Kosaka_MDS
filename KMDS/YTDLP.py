@@ -11,16 +11,33 @@ def isOpus(Information: dict) -> bool:
 def Default_Options() -> dict:
 	return {
 		"format": "bestaudio/best",
-		"outtmpl": os.path.join("Cache", '%(title)s.%(ext)s'),
-		'writethumbnail': False
+		"outtmpl": os.path.join("Cache", "%(title)s.%(ext)s"),
+		"writethumbnail": False,
 	};
 
+""" Unused due to race conditions
 def Download_Hook(Information: dict) -> None:
-	if (Information['filename'][-4:] == "opus"):
-		File_Name = f"{Information['filename'][:-4]}ogg";
-	else: File_Name = Information["filename"];
+	if (Information["status"] == "finished"):
+		if (Information['filename'][-4:] == "opus"):
+			File_Name = f"{Information['filename'][:-4]}ogg";
+		else: File_Name = Information["filename"];
+		Information[File_Name] = "finished";
+		#with open(File_Name, "rb") as Music:
+		#	Local_Files[File_Name] = Music.read();
+"""
 
-	Local_Files[File_Name] = Information["status"];
+
+
+
+class AnnounceFinished(yt_dlp.postprocessor.common.PostProcessor):
+	def __init__(self, downloader=None):super().__init__(downloader);
+
+	def run(self, Information: dict) -> None:
+		File_Name = Information["filepath"];
+		Local_Files[File_Name] = "finished";
+		Log.Info(f"Finished downloading {File_Name}.");
+		return [], Information;
+
 
 def Download_Thread(URL: str, Opus: bool) -> None:
 	AL: Log.Awaited_Log = Log.Debug(f"Downloading {URL}...");
@@ -34,10 +51,15 @@ def Download_Thread(URL: str, Opus: bool) -> None:
 				"preferredquality": "quality"
 			}
 		];
-	Options["progress_hooks"] = [Download_Hook];
+	#Options["progress_hooks"] = [Download_Hook];
 
-	with yt_dlp.YoutubeDL(Options) as YDL: YDL.download([URL]);
-	AL.OK();
+	with yt_dlp.YoutubeDL(Options) as YDL:
+		YDL.add_post_processor(AnnounceFinished(YDL));
+		YDL.download([URL]);
+		AL.OK();
+
+
+
 
 def Fetch_Information(Request: dict) -> dict:
 	with yt_dlp.YoutubeDL(Default_Options()) as YDL:
@@ -59,7 +81,7 @@ def Fetch_Information(Request: dict) -> dict:
 		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 		Information["Songs"].append({
 			"File_Name": File_Name,
-			#"Music_URL": Raw_Information['url'],
+			"Proxied_URL": Raw_Information['url'],
 			"Music_URL": f"http://{Root_CFG["WebServer"]["Host"]}:{Root_CFG["WebServer"]["Port"]}/tunnel?file={File_Name}",
 			"Cover_URL": Raw_Information["thumbnail"],
 			"Cover_Name": f"{File_Title}.{Raw_Information["thumbnail"][-3:]}",
@@ -72,15 +94,15 @@ def Fetch_Information(Request: dict) -> dict:
 				"Approximate_Size": Raw_Information["filesize_approx"]
 			}
 		});
-		Local_Files[File_Name] = "downloading";
-		#Information["Proxied_Headers"] = Raw_Information["http_headers"];
+		Local_Files[f"Cache/{File_Name}"] = "downloading";
+		Information["Proxied_Headers"] = Raw_Information["http_headers"];
 	else:
 		for Entry in Raw_Information["entries"]:
 			File_Title = Entry['fulltitle'];
 			File_Name = f"{File_Title}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 			Information["Songs"].append({
 				"File_Name": File_Name,
-				#"Music_URL": Entry['url'],
+				"Proxied_URL": Entry['url'],
 				"Music_URL": f"http://{Root_CFG["WebServer"]["Host"]}:{Root_CFG["WebServer"]["Port"]}/tunnel?file={File_Name}",
 				"Cover_URL": Entry["thumbnail"],
 				"Cover_Name": f"{File_Title}.{Entry["thumbnail"][-3:]}",
@@ -93,11 +115,14 @@ def Fetch_Information(Request: dict) -> dict:
 					"Approximate_Size": Entry["filesize_approx"]
 				}
 			});
-			Local_Files[File_Name] = "downloading";
-		#Information["Proxied_Headers"] = Raw_Information["entries"][0]["http_headers"];
+			Local_Files[f"Cache/{File_Name}"] = "downloading";
+		Information["Proxied_Headers"] = Raw_Information["entries"][0]["http_headers"];
 	
 	# We set Local_Files[File_Name] here just in case to avoid race conditions with the client, though technically setting these also create a race condition.. This time with the download thread, however the odds of it being faster than the information return are probably zero.
 	return Information;
+
+
+
 
 
 """class Proxied_Download:
