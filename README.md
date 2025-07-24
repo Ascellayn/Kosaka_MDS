@@ -84,4 +84,4 @@ what the hell is wrong with you digging in code as bad as this
 
 <br>
 
-###### Kosaka Media Downloading Service (KMDS) © 2025 by Ascellayn is licensed under TSN License 1.0 - Base
+###### [Kosaka Media Downloading Service (KMDS) © 2025 by Ascellayn is licensed under TSN License 1.0 - Base](https://github.com/Ascellayn/Kosaka_MDS/blob/main/LICENSE.md)
