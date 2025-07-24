@@ -22,6 +22,7 @@ I would do this but I've delayed Kosaka's v2.4.0 release a ***little bit too muc
 	"URL": "[Either a YouTube/Soundcloud/Bandcamp Link]"
 }
 ```
+###### This will be improved later by just turning this into a simple GET request probably, I don't think I'll be adding extra options to the download. we out here undoing future proofing
 - KMDS will return a JSON File similar to this:
 ```json
 {
