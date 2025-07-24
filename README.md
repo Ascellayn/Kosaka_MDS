@@ -94,7 +94,12 @@ what the hell is wrong with you digging in code as bad as this
 I tried multiple things to make this work:
 ### Downloading directly the URL provided and just sending it (so everything is done with a single /fetch)
 This actually worked very well. Until I remembered Albums existed. This results in the client basically timing out every time (even now it's pretty bad despite the better way that I handle things now).  
-It was a great proof of concept that 
+It was a great proof of concept that gave me the motivation to continue this instead of finishing Kosaka v2.4.0 lol
+### Proxying the files (/fetch → /proxy)
+This was an idea that worked perfectly as well. ***At first.*** Unfortunately this skips the Opus file conversion (and I don't want to do that Client Side cause .opus files are a pile of shart to deal with in my opinion) and this causes severe issues with YouTube because I couldn't figure out how to bypass YT's 0.03MB/s download speed limit... Whoops.  
+It WOULD be the most ideal solution for me but unfortunately I'm too stupid to do this so that the client can just stream the file download at full speed. Works fine for Bandcamp tho since it's oops all MP3s.  
+### Downloading the files then yeeting them when finished to the client (/fetch → /tunnel)
+Don't reinvent the wheel I guess. Basically doing what cobalt does here. Download the file, convert it if needed, then serve that to the client. This is the currently implemented way that KMDS serves its requests.
 
 <br>
 
