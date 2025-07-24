@@ -66,7 +66,7 @@ I would do this but I've delayed Kosaka's v2.4.0 release a ***little bit too muc
 - python3-flask
 - python3-httpx
 - python3-re
-- yt-dlp
+- yt-dlp  
 After you've figured (most likely) how in the name of fuck to install TSNA, all you have to do is run `main.py`, you may also run `Showcase.py` to do some test downloads.  
 KMDS is not intended to be open to the internet, stay local folks.  
 
