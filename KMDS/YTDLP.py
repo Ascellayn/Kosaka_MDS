@@ -40,7 +40,7 @@ class AnnounceFinished(yt_dlp.postprocessor.common.PostProcessor):
 
 
 def Download_Thread(URL: str, Opus: bool) -> None:
-	AL: Log.Awaited_Log = Log.Debug(f"Downloading {URL}...");
+	Log.Debug(f"Downloading {URL}...");
 	Options: dict = Default_Options();
 	if (Opus):
 		Log.Debug(f"Opus conversion required for {URL}!"); 
@@ -56,7 +56,7 @@ def Download_Thread(URL: str, Opus: bool) -> None:
 	with yt_dlp.YoutubeDL(Options) as YDL:
 		YDL.add_post_processor(AnnounceFinished(YDL));
 		YDL.download([URL]);
-		AL.OK();
+		Log.Fetch_ALog().OK();
 
 
 
