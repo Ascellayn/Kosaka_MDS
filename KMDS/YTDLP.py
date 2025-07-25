@@ -90,6 +90,7 @@ def Fetch_Information(Request: dict) -> dict:
 				"Artist": Raw_Information["uploader"],
 				"Album": Raw_Information.get("album", None),
 				"Track_Number": Raw_Information.get("track_number", 0),
+				"Track_Total": 0,
 				"Duration": Raw_Information["duration"],
 				"Approximate_Size": Raw_Information["filesize_approx"]
 			}
@@ -98,7 +99,10 @@ def Fetch_Information(Request: dict) -> dict:
 		Information["Proxied_Headers"] = Raw_Information["http_headers"];
 	else:
 		for Entry in Raw_Information["entries"]:
-			File_Title = Entry['fulltitle'];
+			if ("track" in Entry.keys()):
+				File_Title = Entry["track"]
+			else: File_Title = Entry["fulltitle"];
+			
 			File_Name = f"{File_Title}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 			Information["Songs"].append({
 				"File_Name": File_Name,
@@ -111,6 +115,7 @@ def Fetch_Information(Request: dict) -> dict:
 					"Artist": Entry["uploader"],
 					"Album": Entry.get("album", None),
 					"Track_Number": Entry.get("track_number", 0),
+					"Track_Total": len(Raw_Information["entries"]),
 					"Duration": Entry["duration"],
 					"Approximate_Size": Entry["filesize_approx"]
 				}

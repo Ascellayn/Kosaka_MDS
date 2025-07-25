@@ -28,7 +28,7 @@ re.findall(r"on\.soundcloud\.com/", URL)
 ) == 0):
 		return {
 			"Status": 400,
-			"Error": "No valid URLs were provided!"
+			"Error": "The provided URLs is incorrect or isn't supported by KMDS!"
 		}
 
 	Reply: dict = Fetch_Information(Request);

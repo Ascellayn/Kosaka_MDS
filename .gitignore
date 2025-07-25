@@ -1,6 +1,6 @@
 *.env
 
-logs/*
+Logs/*
 Cache/*
 DEBUG-API/*
 Downloads/*
