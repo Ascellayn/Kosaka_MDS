@@ -31,14 +31,20 @@ def isOpus(Information: dict) -> bool:
 
 	return False;
 
-def Default_Options() -> dict:
-	return {
+def Default_Options(URL: str) -> dict:
+	Base_Dict: dict = {
 		"cookiefile": "Cookies.txt",
 		"http_headers": File.JSON_Read("Headers.json"),
 		"format": "bestaudio/best",
 		"outtmpl": os.path.join("Cache", "%(title)s.%(ext)s"),
 		"writethumbnail": False,
 	};
+	if (len(\
+re.findall(r"youtube\.com/watch\?v=", URL) +\
+re.findall(r"youtu\.be/", URL) +\
+re.findall(r"youtube\.com/shorts/", URL)\
+) == 0): Base_Dict["force_generic_extractor"] = True;
+	return Base_Dict;
 
 """ Unused due to race conditions
 def Download_Hook(Information: dict) -> None:
@@ -66,7 +72,7 @@ class AnnounceFinished(yt_dlp.postprocessor.common.PostProcessor):
 
 def Download_Thread(URL: str, Opus: bool) -> None:
 	Log.Debug(f"Downloading {URL}...");
-	Options: dict = Default_Options();
+	Options: dict = Default_Options(URL);
 	if (Opus):
 		Log.Debug(f"Opus conversion required for {URL}!"); 
 		Options["postprocessors"] = [
@@ -87,7 +93,7 @@ def Download_Thread(URL: str, Opus: bool) -> None:
 
 
 def Fetch_Information(Request: dict) -> dict:
-	with yt_dlp.YoutubeDL(Default_Options()) as YDL:
+	with yt_dlp.YoutubeDL(Default_Options(Request["URL"])) as YDL:
 		Raw_Information = YDL.sanitize_info((YDL.extract_info(Request["URL"], download=False)));
 		Misc.Thread_Start(Download_Thread, (Request["URL"], isOpus(Raw_Information)), True)
 	URL_ID: str = Raw_Information["id"];
