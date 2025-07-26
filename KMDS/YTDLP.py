@@ -103,6 +103,8 @@ def Fetch_Information(Request: dict) -> dict:
 	if ("entries" not in Raw_Information.keys()):
 		File_Title = Raw_Information['fulltitle'].replace("/", "⧸");
 		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
+		if ("filesize" in Raw_Information.keys()): File_Size = Raw_Information["filesize"];
+		else: File_Size = Raw_Information["filesize_approx"];
 		Information["Songs"].append({
 			"File_Name": File_Name,
 			#"Proxied_URL": Raw_Information['url'],
@@ -116,7 +118,7 @@ def Fetch_Information(Request: dict) -> dict:
 				"Track_Number": Raw_Information.get("track_number", None),
 				"Track_Total": None,
 				"Duration": Raw_Information["duration"],
-				"Approximate_Size": Raw_Information["filesize_approx"]
+				"Approximate_Size": File_Size
 			}
 		});
 		Local_Files[f"Cache/{File_Name}"] = "downloading";
@@ -128,6 +130,10 @@ def Fetch_Information(Request: dict) -> dict:
 			else: File_Title = Entry["fulltitle"].replace("/", "⧸");
 			
 			File_Name = f"{Entry["fulltitle"]}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
+
+			if ("filesize" in Raw_Information.keys()): File_Size = Entry["filesize"];
+			else: File_Size = Entry["filesize_approx"];
+		
 			Information["Songs"].append({
 				"File_Name": File_Name,
 				#"Proxied_URL": Entry["url"],
@@ -141,7 +147,7 @@ def Fetch_Information(Request: dict) -> dict:
 					"Track_Number": Entry.get("track_number", None),
 					"Track_Total": len(Raw_Information["entries"]),
 					"Duration": Entry["duration"],
-					"Approximate_Size": Entry["filesize_approx"]
+					"Approximate_Size": File_Size
 				}
 			});
 			Local_Files[f"Cache/{File_Name}"] = "downloading";
