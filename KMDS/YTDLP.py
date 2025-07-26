@@ -10,6 +10,7 @@ def isOpus(Information: dict) -> bool:
 
 def Default_Options() -> dict:
 	return {
+		"cookiefile": "Cookies.txt",
 		"format": "bestaudio/best",
 		"outtmpl": os.path.join("Cache", "%(title)s.%(ext)s"),
 		"writethumbnail": False,
@@ -81,47 +82,47 @@ def Fetch_Information(Request: dict) -> dict:
 		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 		Information["Songs"].append({
 			"File_Name": File_Name,
-			"Proxied_URL": Raw_Information['url'],
-			"Music_URL": f"http://{Root_CFG["WebServer"]["Host"]}:{Root_CFG["WebServer"]["Port"]}/tunnel?file={File_Name}",
+			#"Proxied_URL": Raw_Information['url'],
+			"Tunnel_URL": f"/tunnel?file={File_Name}",
 			"Cover_URL": Raw_Information["thumbnail"],
-			"Cover_Name": f"{File_Title}.{Raw_Information["thumbnail"][-3:]}",
+			#"Cover_Name": f"{File_Title}.{Raw_Information["thumbnail"][-3:]}",
 			"Metadata": {
 				"Title": File_Title,
 				"Artist": Raw_Information["uploader"],
 				"Album": Raw_Information.get("album", None),
-				"Track_Number": Raw_Information.get("track_number", 0),
-				"Track_Total": 0,
+				"Track_Number": Raw_Information.get("track_number", None),
+				"Track_Total": None,
 				"Duration": Raw_Information["duration"],
 				"Approximate_Size": Raw_Information["filesize_approx"]
 			}
 		});
 		Local_Files[f"Cache/{File_Name}"] = "downloading";
-		Information["Proxied_Headers"] = Raw_Information["http_headers"];
+		#Information["Proxied_Headers"] = Raw_Information["http_headers"];
 	else:
 		for Entry in Raw_Information["entries"]:
 			if ("track" in Entry.keys()):
 				File_Title = Entry["track"]
 			else: File_Title = Entry["fulltitle"];
 			
-			File_Name = f"{File_Title}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
+			File_Name = f"{Entry["fulltitle"]}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 			Information["Songs"].append({
 				"File_Name": File_Name,
-				"Proxied_URL": Entry['url'],
-				"Music_URL": f"http://{Root_CFG["WebServer"]["Host"]}:{Root_CFG["WebServer"]["Port"]}/tunnel?file={File_Name}",
+				#"Proxied_URL": Entry["url"],
+				"Tunnel_URL": f"/tunnel?file={File_Name}",
 				"Cover_URL": Entry["thumbnail"],
-				"Cover_Name": f"{File_Title}.{Entry["thumbnail"][-3:]}",
+				#"Cover_Name": f"{File_Title}.{Entry["thumbnail"][-3:]}",
 				"Metadata": {
 					"Title": File_Title,
 					"Artist": Entry["uploader"],
 					"Album": Entry.get("album", None),
-					"Track_Number": Entry.get("track_number", 0),
+					"Track_Number": Entry.get("track_number", None),
 					"Track_Total": len(Raw_Information["entries"]),
 					"Duration": Entry["duration"],
 					"Approximate_Size": Entry["filesize_approx"]
 				}
 			});
 			Local_Files[f"Cache/{File_Name}"] = "downloading";
-		Information["Proxied_Headers"] = Raw_Information["entries"][0]["http_headers"];
+		#Information["Proxied_Headers"] = Raw_Information["entries"][0]["http_headers"];
 	
 	# We set Local_Files[File_Name] here just in case to avoid race conditions with the client, though technically setting these also create a race condition.. This time with the download thread, however the odds of it being faster than the information return are probably zero.
 	return Information;
