@@ -103,8 +103,11 @@ def Fetch_Information(Request: dict) -> dict:
 	if ("entries" not in Raw_Information.keys()):
 		File_Title = Raw_Information['fulltitle'].replace("/", "⧸");
 		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
-		if ("filesize" in Raw_Information.keys()): File_Size = Raw_Information["filesize"];
-		else: File_Size = Raw_Information["filesize_approx"];
+
+		if ("filesize" in Raw_Information.keys()): File_Size = Entry["filesize"];
+		elif ("filesize_approx" in Raw_Information.keys()): File_Size = Entry["filesize_approx"];
+		else: File_Size = None;
+
 		Information["Songs"].append({
 			"File_Name": File_Name,
 			#"Proxied_URL": Raw_Information['url'],
@@ -132,7 +135,8 @@ def Fetch_Information(Request: dict) -> dict:
 			File_Name = f"{Entry["fulltitle"]}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 
 			if ("filesize" in Raw_Information.keys()): File_Size = Entry["filesize"];
-			else: File_Size = Entry["filesize_approx"];
+			elif ("filesize_approx" in Raw_Information.keys()): File_Size = Entry["filesize_approx"];
+			else: File_Size = None;
 		
 			Information["Songs"].append({
 				"File_Name": File_Name,
