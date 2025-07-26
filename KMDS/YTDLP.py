@@ -1,6 +1,28 @@
 from KMDS.Globals import *;
 import os;
 
+def URL_Safe(String: str) -> str:
+	return String\
+.replace("!", "%21")\
+.replace("#", "%23")\
+.replace("$", "%24")\
+.replace("&", "%26")\
+.replace("'", "%27")\
+.replace("(", "%28")\
+.replace(")", "%29")\
+.replace("*", "%2A")\
+.replace("+", "%2B")\
+.replace(",", "%2C")\
+.replace("/", "%2F")\
+.replace(":", "%2A")\
+.replace(";", "%2B")\
+.replace("=", "%3D")\
+.replace("?", "%3F")\
+.replace("@", "%40")\
+.replace("[", "%5B")\
+.replace("]", "%5D");
+
+
 def isOpus(Information: dict) -> bool:
 	if ("entries" in Information.keys()):
 		if (Information["entries"][0]["ext"] == "opus"): return True;
@@ -83,7 +105,7 @@ def Fetch_Information(Request: dict) -> dict:
 		Information["Songs"].append({
 			"File_Name": File_Name,
 			#"Proxied_URL": Raw_Information['url'],
-			"Tunnel_URL": f"/tunnel?file={File_Name}",
+			"Tunnel_URL": f"/tunnel?file={URL_Safe(File_Name)}",
 			"Cover_URL": Raw_Information["thumbnail"],
 			#"Cover_Name": f"{File_Title}.{Raw_Information["thumbnail"][-3:]}",
 			"Metadata": {
@@ -108,7 +130,7 @@ def Fetch_Information(Request: dict) -> dict:
 			Information["Songs"].append({
 				"File_Name": File_Name,
 				#"Proxied_URL": Entry["url"],
-				"Tunnel_URL": f"/tunnel?file={File_Name}",
+				"Tunnel_URL": f"/tunnel?file={URL_Safe(File_Name)}",
 				"Cover_URL": Entry["thumbnail"],
 				#"Cover_Name": f"{File_Title}.{Entry["thumbnail"][-3:]}",
 				"Metadata": {
