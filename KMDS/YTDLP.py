@@ -34,6 +34,7 @@ def isOpus(Information: dict) -> bool:
 def Default_Options() -> dict:
 	return {
 		"cookiefile": "Cookies.txt",
+		"http_headers": File.JSON_Read("Headers.json"),
 		"format": "bestaudio/best",
 		"outtmpl": os.path.join("Cache", "%(title)s.%(ext)s"),
 		"writethumbnail": False,
@@ -104,8 +105,8 @@ def Fetch_Information(Request: dict) -> dict:
 		File_Title = Raw_Information['fulltitle'].replace("/", "⧸");
 		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 
-		if ("filesize" in Raw_Information.keys()): File_Size = Entry["filesize"];
-		elif ("filesize_approx" in Raw_Information.keys()): File_Size = Entry["filesize_approx"];
+		if ("filesize" in Raw_Information.keys()): File_Size = Raw_Information["filesize"];
+		elif ("filesize_approx" in Raw_Information.keys()): File_Size = Raw_Information["filesize_approx"];
 		else: File_Size = None;
 
 		Information["Songs"].append({
