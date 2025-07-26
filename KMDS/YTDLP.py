@@ -13,7 +13,7 @@ def URL_Safe(String: str) -> str:
 .replace("*", "%2A")\
 .replace("+", "%2B")\
 .replace(",", "%2C")\
-.replace("/", "%2F")\
+.replace("/", "⧸")\
 .replace(":", "%2A")\
 .replace(";", "%2B")\
 .replace("=", "%3D")\
@@ -22,6 +22,7 @@ def URL_Safe(String: str) -> str:
 .replace("[", "%5B")\
 .replace("]", "%5D");
 
+#.replace("/", "%2F")\
 
 def isOpus(Information: dict) -> bool:
 	if ("entries" in Information.keys()):
