@@ -101,7 +101,7 @@ def Fetch_Information(Request: dict) -> dict:
 	};
 
 	if ("entries" not in Raw_Information.keys()):
-		File_Title = Raw_Information['fulltitle'];
+		File_Title = Raw_Information['fulltitle'].replace("/", "⧸");
 		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 		Information["Songs"].append({
 			"File_Name": File_Name,
@@ -124,8 +124,8 @@ def Fetch_Information(Request: dict) -> dict:
 	else:
 		for Entry in Raw_Information["entries"]:
 			if ("track" in Entry.keys()):
-				File_Title = Entry["track"]
-			else: File_Title = Entry["fulltitle"];
+				File_Title = Entry["track"].replace("/", "⧸");
+			else: File_Title = Entry["fulltitle"].replace("/", "⧸");
 			
 			File_Name = f"{Entry["fulltitle"]}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 			Information["Songs"].append({
