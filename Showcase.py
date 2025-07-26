@@ -29,9 +29,9 @@ def Request_Handler(URL: str) -> None:
 
 
 
-			Log.Info(f"Downloading Tunnelled File at {Request_JSON["Songs"][Index]["Music_URL"]}...");
+			Log.Info(f"Downloading Tunnelled File at {Request_JSON["Songs"][Index]["Tunnel_URL"]}...");
 			while (True):
-				File_Request: httpx.Response = httpx.get(url=Request_JSON["Songs"][Index]["Music_URL"], timeout=5);
+				File_Request: httpx.Response = httpx.get(url=WebServer_URL + Request_JSON["Songs"][Index]["Tunnel_URL"], timeout=5);
 				match File_Request.status_code:
 					case 418:
 						Log.TSN_Debug(f"The server didn't finish downloading the file, retrying in a second."); time.sleep(1); continue;
@@ -46,10 +46,10 @@ def Request_Handler(URL: str) -> None:
 
 	except Exception as Except: Log.Fetch_ALog().EXCEPTION(Except, True);
 
-#Request_Handler("https://soundcloud.com/klausveen/klaus-veen-ordinary-days-v2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"); # Soundcloud - 1 Song
+Request_Handler("https://soundcloud.com/klausveen/klaus-veen-ordinary-days-v2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"); # Soundcloud - 1 Song
 # ↑ This is used for the README's Example /fetch JSON.
 
-#Request_Handler("https://lexycat.bandcamp.com/album/heartstrings"); # Bandcamp (Album)
-#Request_Handler("https://on.soundcloud.com/piimuKbl3a7KDMDGxP"); # Soundcloud (Album)
+Request_Handler("https://lexycat.bandcamp.com/album/heartstrings"); # Bandcamp (Album)
+Request_Handler("https://on.soundcloud.com/piimuKbl3a7KDMDGxP"); # Soundcloud (Album)
 Request_Handler("https://www.youtube.com/watch?v=gvPaMPeGwqg"); # YT
-#Request_Handler("https://www.fuckshit.com/watch?v=gvPaMPeGwqg"); # Invalid
+Request_Handler("https://www.fuckshit.com/watch?v=gvPaMPeGwqg"); # Invalid

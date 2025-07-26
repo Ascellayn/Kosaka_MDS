@@ -8,4 +8,8 @@ if (__name__ == '__main__'):
 	Config.Logger.File = True;
 	
 	Log.Stateless(f"Kosaka Media Downloading Service (KMDS) {KMDS_Version}");
+
+	for Music in File.Tree("Cache")[1]:
+		os.remove(f"Cache/{Music}");
+
 	API.run(Root_CFG["WebServer"]["Host"], Root_CFG["WebServer"]["Port"], Debug_Mode, use_reloader=False);

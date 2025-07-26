@@ -1,5 +1,4 @@
 from KMDS.Globals import *;
-import os;
 
 def URL_Safe(String: str) -> str:
 	return String\
@@ -31,20 +30,14 @@ def isOpus(Information: dict) -> bool:
 
 	return False;
 
-def Default_Options(URL: str) -> dict:
-	Base_Dict: dict = {
+def Default_Options() -> dict:
+	return {
 		"cookiefile": "Cookies.txt",
 		"http_headers": File.JSON_Read("Headers.json"),
 		"format": "bestaudio/best",
 		"outtmpl": os.path.join("Cache", "%(title)s.%(ext)s"),
 		"writethumbnail": False,
 	};
-	if (len(\
-re.findall(r"youtube\.com/watch\?v=", URL) +\
-re.findall(r"youtu\.be/", URL) +\
-re.findall(r"youtube\.com/shorts/", URL)\
-) == 0): Base_Dict["force_generic_extractor"] = True;
-	return Base_Dict;
 
 """ Unused due to race conditions
 def Download_Hook(Information: dict) -> None:
@@ -70,11 +63,12 @@ class AnnounceFinished(yt_dlp.postprocessor.common.PostProcessor):
 		return [], Information;
 
 
-def Download_Thread(URL: str, Opus: bool) -> None:
-	Log.Debug(f"Downloading {URL}...");
-	Options: dict = Default_Options(URL);
-	if (Opus):
-		Log.Debug(f"Opus conversion required for {URL}!"); 
+def Download_Thread(Information: dict) -> None:
+	Origin_URL: str = Information["original_url"];
+	Log.Debug(f"Downloading {Origin_URL}...");
+	Options: dict = Default_Options();
+	if (isOpus(Information)):
+		Log.Debug(f"Opus conversion required for {Origin_URL}!"); 
 		Options["postprocessors"] = [
 			{
 				"key": "FFmpegExtractAudio",
@@ -86,16 +80,27 @@ def Download_Thread(URL: str, Opus: bool) -> None:
 
 	with yt_dlp.YoutubeDL(Options) as YDL:
 		YDL.add_post_processor(AnnounceFinished(YDL));
-		YDL.download([URL]);
+
+		if ("entries" not in Information.keys()):
+			YDL.process_info(Information);
+		else:
+			for Entry in Information["entries"]: YDL.process_info(Entry);
+
 		Log.Fetch_ALog().OK();
 
 
 
 
 def Fetch_Information(Request: dict) -> dict:
-	with yt_dlp.YoutubeDL(Default_Options(Request["URL"])) as YDL:
-		Raw_Information = YDL.sanitize_info((YDL.extract_info(Request["URL"], download=False)));
-		Misc.Thread_Start(Download_Thread, (Request["URL"], isOpus(Raw_Information)), True)
+	Origin_URL: str = Request["URL"];
+	with yt_dlp.YoutubeDL(Default_Options()) as YDL:
+		try: Raw_Information = YDL.sanitize_info((YDL.extract_info(Origin_URL, download=False)));
+		except Exception as Except:
+			return {
+				"Status": 500,
+				"Error": Except.__str__()
+			};
+		Misc.Thread_Start(Download_Thread, [Raw_Information], True);
 	URL_ID: str = Raw_Information["id"];
 
 	if (Debug_Mode): File.JSON_Write(F"DEBUG-API/{URL_ID}.json", Raw_Information);
@@ -103,7 +108,7 @@ def Fetch_Information(Request: dict) -> dict:
 	# Flask Return Data & Caching Logic
 	Information: dict = {
 		"Status": 200,
-		"ID": Raw_Information["id"],
+		#"ID": Raw_Information["id"],
 		"Songs": []
 	};
 
