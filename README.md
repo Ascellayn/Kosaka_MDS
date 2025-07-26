@@ -9,7 +9,7 @@ TSN's Infrastructure is definitely quite a mess, have the following in mind:
 
 So now you somewhat maybe understand why I don't just use YT-DLP directly in Kosaka's code and why I'm doing extremely weird things to have the result that I want.  
 As I'm writing (v1.0rc1), I'm still not doing *exactly* what I want however:  
-I'd rather download the files via KMDS once and then have Kosaka directly pull from KMDS's Cache the files it needs, because the shared drive nature of TSN's Infrastructure let's me do ungodly cursed things such as this. It'd improve performance significantly more because I wouldn't have to basically "download" the same file twice.  
+I'd rather download the files via KMDS once and then have Kosaka directly pull from KMDS's Cache the files it needs, because the shared drive nature of TSN's Infrastructure lets me do ungodly cursed things such as this. It'd improve performance significantly more because I wouldn't have to basically "download" the same file twice.  
 I would do this but I've delayed Kosaka's v2.4.0 release a ***little bit too much already***...
 
 ## just use cobalt tools / [insert name here] bruh
