@@ -46,10 +46,12 @@ def Request_Handler(URL: str) -> None:
 
 	except Exception as Except: Log.Fetch_ALog().EXCEPTION(Except, True);
 
-Request_Handler("https://soundcloud.com/klausveen/klaus-veen-ordinary-days-v2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"); # Soundcloud - 1 Song
+#Request_Handler("https://soundcloud.com/klausveen/klaus-veen-ordinary-days-v2?utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing"); # Soundcloud - 1 Song
 # ↑ This is used for the README's Example /fetch JSON.
 
-Request_Handler("https://lexycat.bandcamp.com/album/heartstrings"); # Bandcamp (Album)
-Request_Handler("https://on.soundcloud.com/piimuKbl3a7KDMDGxP"); # Soundcloud (Album)
-Request_Handler("https://www.youtube.com/watch?v=gvPaMPeGwqg"); # YT
-Request_Handler("https://www.fuckshit.com/watch?v=gvPaMPeGwqg"); # Invalid
+#Request_Handler("https://lexycat.bandcamp.com/album/heartstrings"); # Bandcamp (Album)
+#Request_Handler("https://on.soundcloud.com/piimuKbl3a7KDMDGxP"); # Soundcloud (Album)
+#Request_Handler("https://www.youtube.com/watch?v=gvPaMPeGwqg"); # YT
+#Request_Handler("https://www.fuckshit.com/watch?v=gvPaMPeGwqg"); # Invalid
+
+Request_Handler("https://www.youtube.com/watch?v=OTSW4M28XQg&list=PL2A1A350EBB242BDF"); # Test anti-playlist for YouTube
