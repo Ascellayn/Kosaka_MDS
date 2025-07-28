@@ -61,7 +61,7 @@ It was better anyways in the end to build this custom solution (so that empty fi
 
 
 ## Dependencies
-- [TSN_Abstracter v2.1.0 (or above)](https://github.com/Ascellayn/TSN_Abstracter)
+- [TSN_Abstracter v3.0.0 (or above)](https://github.com/Ascellayn/TSN_Abstracter)
 - python3-flask
 - python3-httpx
 - python3-re
