@@ -36,7 +36,7 @@ re.findall(r"youtube\.com/watch\?v=", URL) +\
 re.findall(r"youtu\.be/", URL) +\
 re.findall(r"youtube\.com/shorts/", URL)\
 ) != 0):
-		ID_Lookup: list = re.findall(r"(?<=v=)\w*|(?<=shorts\/)\w*|(?<=youtu\.be\/)\w*", URL);
+		ID_Lookup: list = re.findall(r"(?<=v=)[\w-]*|(?<=shorts\/)[\w-]*|(?<=youtu\.be\/)[\w-]*", URL);
 		if (len(ID_Lookup) != 0):
 			Log.Warning(f"YouTube Playlist detected for \"{URL}\"! We are only going to care about the first video.");
 			Request["URL"] = f"https://www.youtube.com/watch?v={ID_Lookup[0]}";
