@@ -35,7 +35,7 @@ def Default_Options() -> dict:
 		"cookiefile": "Cookies.txt",
 		"http_headers": File.JSON_Read("Headers.json"),
 		"format": "bestaudio/best",
-		"outtmpl": os.path.join("Cache", "%(title)s.%(ext)s"),
+		"outtmpl": os.path.join("Cache", f"%(id)s.%(ext)s"),
 		"writethumbnail": False,
 	};
 
@@ -113,8 +113,8 @@ def Fetch_Information(Request: dict) -> dict:
 	};
 
 	if ("entries" not in Raw_Information.keys()):
-		File_Title = Raw_Information['fulltitle'].replace("/", "⧸");
-		File_Name = f"{File_Title}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
+		File_Title = Raw_Information["fulltitle"].replace("/", "⧸");
+		File_Name = f"{Raw_Information["id"]}.{Raw_Information["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 
 		if ("filesize" in Raw_Information.keys()): File_Size = Raw_Information["filesize"];
 		elif ("filesize_approx" in Raw_Information.keys()): File_Size = Raw_Information["filesize_approx"];
@@ -144,7 +144,7 @@ def Fetch_Information(Request: dict) -> dict:
 				File_Title = Entry["track"].replace("/", "⧸");
 			else: File_Title = Entry["fulltitle"].replace("/", "⧸");
 			
-			File_Name = f"{Entry["fulltitle"]}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
+			File_Name = f"{Entry["id"]}.{Entry["ext"] if (not isOpus(Raw_Information)) else "ogg"}";
 
 			if ("filesize" in Raw_Information.keys()): File_Size = Entry["filesize"];
 			elif ("filesize_approx" in Raw_Information.keys()): File_Size = Entry["filesize_approx"];

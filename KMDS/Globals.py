@@ -1,7 +1,7 @@
 from TSN_Abstracter import *;
 import asyncio, flask, httpx, json, os, re, time, threading, yt_dlp;
 
-KMDS_Version: str = "v1.1.3";
+KMDS_Version: str = "v1.2.0";
 
 Root_CFG: dict = File.JSON_Read("Root_CFG.json");
 Debug_Mode: bool = Root_CFG["Debug"];
